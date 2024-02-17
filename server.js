@@ -12,7 +12,6 @@ const DB = process.env.DATABASE_URL.replace(
 
 mongoose.connect(DB).then(con => {
   console.log('connected to server successfully')
-  console.log(con.connections)
 })
 
 app.use('/v1/books', bookRoute)

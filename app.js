@@ -3,6 +3,7 @@ const express = require('express')
 const app = express()
 app.use(express.json())
 app.use((req, res, next) => {
+  console.log(req.ip)
   res.header('Access-Control-Allow-Origin', '*')
   res.header(
     'Access-Control-Allow-Headers',
