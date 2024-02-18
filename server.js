@@ -16,6 +16,6 @@ mongoose.connect(DB).then(con => {
 
 app.use('/v1/books', bookRoute)
 
-app.listen(3100, () => {
-  console.log('Listening on port 3100')
+app.listen(process.env.PORT, () => {
+  console.log(`Listening on port ${process.env.PORT}`)
 })
