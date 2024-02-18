@@ -24,7 +24,23 @@ exports.createBook = async function (req, res) {
 
 exports.getBooks = async function (req, res) {
   try {
-    const books = await Book.find()
+    const books = Book.find()
+
+    if (req.query.sort) {
+      books = books.sort(req.query.sort)
+    }
+
+    if (req.query.field) {
+      books = books.select(req.query.field)
+    }
+
+    if (req.query.page && req.query.limit) {
+      books = books
+        .skip(req.query.page * req.query.limit)
+        .limit(req.query.limit)
+    }
+
+    books = await books
 
     res.status(200).json({
       status: 'success',
