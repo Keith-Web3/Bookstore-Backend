@@ -24,7 +24,7 @@ exports.createBook = async function (req, res) {
 
 exports.getBooks = async function (req, res) {
   try {
-    const books = Book.find()
+    let books = Book.find()
 
     if (req.query.sort) {
       books = books.sort(req.query.sort)
