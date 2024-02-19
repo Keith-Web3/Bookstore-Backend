@@ -34,7 +34,7 @@ const bookSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 )
 
 bookSchema.virtual('revenue').get(function () {
