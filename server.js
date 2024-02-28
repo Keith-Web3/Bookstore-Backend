@@ -16,6 +16,11 @@ mongoose.connect(DB).then(con => {
 
 app.use('/v1/books', bookRoute)
 
+app.all('*', (req, res, next) => {
+  res.status(404).json({ message: 'Page not found' })
+  // next()
+})
+
 app.listen(process.env.PORT, () => {
   console.log(`Listening on port ${process.env.PORT}`)
 })

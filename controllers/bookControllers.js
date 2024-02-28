@@ -1,4 +1,5 @@
 const Book = require('../models/bookModel')
+const APIFeatures = require('../utils/apiFeatures')
 
 exports.createBook = async function (req, res) {
   try {
@@ -24,23 +25,12 @@ exports.createBook = async function (req, res) {
 
 exports.getBooks = async function (req, res) {
   try {
-    let books = Book.find()
+    let books = new APIFeatures(Book.find(), req.query)
+      .sort()
+      .field()
+      .paginate()
 
-    if (req.query.sort) {
-      books = books.sort(req.query.sort)
-    }
-
-    if (req.query.field) {
-      books = books.select(req.query.field)
-    }
-
-    if (req.query.page && req.query.limit) {
-      books = books
-        .skip(req.query.page * req.query.limit)
-        .limit(req.query.limit)
-    }
-
-    books = await books
+    books = await books.query
 
     res.status(200).json({
       status: 'success',
