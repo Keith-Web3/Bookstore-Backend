@@ -30,13 +30,6 @@ class APIFeatures {
     }
     return this
   }
-  aggregate() {
-    this.query = this.query.aggregate([
-      {
-        $matches: { price: 30 },
-      },
-    ])
-  }
 }
 
 module.exports = APIFeatures
