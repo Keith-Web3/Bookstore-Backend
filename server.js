@@ -2,6 +2,7 @@ const app = require('./app')
 const dotenv = require('dotenv')
 const mongoose = require('mongoose')
 const bookRoute = require('./routers/booksRoute')
+const AppError = require('./utils/error')
 
 dotenv.config({ path: './env' })
 
@@ -17,10 +18,20 @@ mongoose.connect(DB).then(con => {
 app.use('/v1/books', bookRoute)
 
 app.all('*', (req, res, next) => {
-  res.status(404).json({ message: 'Page not found' })
-  // next()
+  const error = new AppError(
+    'failed',
+    404,
+    `Could not find "${req.originalUrl}" page`
+  )
+  next(error)
 })
 
+app.use((err, req, res, next) => {
+  res.status(err.statusCode || 500).json({
+    status: err.status,
+    message: err.message,
+  })
+})
 app.listen(process.env.PORT, () => {
   console.log(`Listening on port ${process.env.PORT}`)
 })
