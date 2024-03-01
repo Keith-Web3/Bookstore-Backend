@@ -18,7 +18,7 @@ class APIFeatures {
       const field = this.queryStr.field
       this.query = this.query.select(field)
     } else {
-      this.query = this.query.select('__v')
+      this.query = this.query.select('-__v')
     }
     return this
   }

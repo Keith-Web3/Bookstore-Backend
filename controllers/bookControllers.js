@@ -29,6 +29,12 @@ exports.getBooks = catchAsync(async function (req, res) {
   })
 })
 
+// exports.getStats = catchAsync(async function (req, res) {
+//   const books = await Book.aggregate([{
+//     $matches: {__v: 0}
+//   }])
+// })
+
 exports.clearDB = catchAsync(async function (req, res) {
   await Book.deleteMany()
 
