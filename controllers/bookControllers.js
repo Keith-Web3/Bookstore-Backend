@@ -32,7 +32,7 @@ exports.getBooks = catchAsync(async function (req, res) {
 exports.getStats = catchAsync(async function (req, res) {
   const books = await Book.aggregate([
     {
-      $match: { sales: 0 },
+      $match: { __v: 0 },
     },
     {
       $group: {
