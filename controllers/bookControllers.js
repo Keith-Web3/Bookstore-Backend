@@ -20,12 +20,18 @@ exports.createBook = catchAsync(async function (req, res) {
 exports.getBooks = catchAsync(async function (req, res) {
   let books = new APIFeatures(Book.find(), req.query).sort().field().paginate()
 
+  const totalUnfiltered = await Book.countDocuments()
+
+  const totalPages = Math.ceil(
+    totalUnfiltered / (req.query.limit || totalUnfiltered)
+  )
+
   books = await books.query
 
   res.status(200).json({
     status: 'success',
     count: books.length,
-    data: { books },
+    data: { books, totalPages },
   })
 })
 
