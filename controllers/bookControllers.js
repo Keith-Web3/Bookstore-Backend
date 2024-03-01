@@ -31,7 +31,7 @@ exports.getBooks = catchAsync(async function (req, res) {
   res.status(200).json({
     status: 'success',
     count: books.length,
-    data: { books, totalPages },
+    data: { books, totalPages, totalBooks: totalUnfiltered },
   })
 })
 
