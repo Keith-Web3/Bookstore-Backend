@@ -67,10 +67,12 @@ userSchema.methods.hasPasswordChanged = function (iat) {
 }
 
 userSchema.methods.createPasswordResetToken = function () {
-  let resetToken = crypto.randomBytes(32).toString('hex')
-  resetToken = crypto.createHash('sha256').update(resetToken).digest('hex')
+  const resetToken = crypto.randomBytes(32).toString('hex')
 
-  this.passwordResetToken = resetToken
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex')
   this.resetTokenExpiresAt = Date.now() + 10 * 60 * 1000
 
   return resetToken
