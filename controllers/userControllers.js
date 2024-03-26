@@ -4,6 +4,7 @@ const catchAsync = require('../utils/catchAsync')
 const AppError = require('../utils/error')
 const { promisify } = require('util')
 const sendEmail = require('../utils/email')
+const crypto = require('crypto')
 
 const signToken = function (userId) {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
@@ -108,13 +109,7 @@ exports.forgotPassword = catchAsync(async function (req, res, next) {
     ${req.protocol}://${req.get(
       'host'
     )}/api/v1/users/resetPassword/${resetToken}
-    
-    If you did not request a password reset, you can safely ignore this email. Your account security is important to us, and we recommend keeping your password confidential and unique to Bookstore.
-    
-    If you have any questions or need further assistance, please don't hesitate to contact our support team at <olorunnisholaolamilekan@gmail.com>.
-    
-    Best regards,
-    Bookstore Team`,
+    `,
   }
 
   try {
@@ -136,4 +131,33 @@ exports.forgotPassword = catchAsync(async function (req, res, next) {
       500
     )
   }
+})
+
+exports.resetPassword = catchAsync(async function (req, res, next) {
+  const { token } = req.params
+
+  const hashedToken = crypto.createHash('sha256').update(token).digest('hex')
+
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    resetTokenExpiresAt: { $gt: Date.now() },
+  })
+
+  if (!user)
+    return next(new AppError('Password reset token invalid or expired', 401))
+
+  user.password = req.body.password
+  user.passwordConfirm = req.body.passwordConfirm
+  user.passwordResetToken = null
+  user.resetTokenExpiresAt = null
+
+  await user.save()
+
+  const jwtToken = signToken(user._id)
+
+  res.status(200).json({
+    status: 'success',
+    message: 'Updated password successfully',
+    token: jwtToken,
+  })
 })
