@@ -32,6 +32,10 @@ const userSchema = new mongoose.Schema({
     },
   },
   photo: String,
+  passwordChangedAt: {
+    type: Date,
+    default: new Date(0),
+  },
 })
 
 userSchema.pre('save', async function (next) {
@@ -44,10 +48,22 @@ userSchema.pre('save', async function (next) {
   next()
 })
 
+userSchema.pre('save', function (next) {
+  if (!this.isModified('password') || this.isNew) return next()
+
+  this.passwordChangedAt = Date.now() - 1000
+  next()
+})
+
 userSchema.methods.confirmPassword = function (hashedPassword, inputPassword) {
   return bcrypt.compare(inputPassword, hashedPassword)
 }
 
+userSchema.methods.hasPasswordChanged = function (iat) {
+  const changedDate = new Date(this.passwordChangedAt).getTime()
+
+  return changedDate > +iat * 1000
+}
 const User = mongoose.model('User', userSchema)
 
 module.exports = User

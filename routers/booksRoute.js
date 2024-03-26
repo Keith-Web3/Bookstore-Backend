@@ -7,8 +7,9 @@ const {
   clearDB,
   getStats,
 } = require('../controllers/bookControllers')
+const { protect } = require('../controllers/userControllers')
 
-router.route('/').get(getBooks).post(createBook).delete(clearDB)
+router.route('/').get(protect, getBooks).post(createBook).delete(clearDB)
 router.route('/stats').get(getStats)
 
 module.exports = router
