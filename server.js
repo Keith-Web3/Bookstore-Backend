@@ -2,6 +2,7 @@ const app = require('./app')
 const dotenv = require('dotenv')
 const mongoose = require('mongoose')
 const bookRoute = require('./routers/booksRoute')
+const authRoute = require('./routers/usersRoutes')
 const AppError = require('./utils/error')
 
 dotenv.config({ path: './env' })
@@ -16,6 +17,7 @@ mongoose.connect(DB).then(con => {
 })
 
 app.use('/v1/books', bookRoute)
+app.use('/v1/auth', authRoute)
 
 app.all('*', (req, res, next) => {
   const error = new AppError(
@@ -30,6 +32,7 @@ app.use((err, req, res, next) => {
   res.status(err.statusCode || 500).json({
     status: err.status,
     message: err.message,
+    stack: err.stack,
   })
 })
 app.listen(process.env.PORT, () => {
