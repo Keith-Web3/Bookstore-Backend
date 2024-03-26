@@ -1,8 +1,9 @@
+const jwt = require('jsonwebtoken')
 const User = require('../models/userModel')
 const catchAsync = require('../utils/catchAsync')
-const jwt = require('jsonwebtoken')
 const AppError = require('../utils/error')
 const { promisify } = require('util')
+const sendEmail = require('../utils/email')
 
 const signToken = function (userId) {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
@@ -83,4 +84,55 @@ exports.protect = catchAsync(async function (req, res, next) {
   }
   req.user = user
   next()
+})
+
+exports.forgotPassword = catchAsync(async function (req, res, next) {
+  const { email } = req.body
+
+  if (!email) return next(new AppError('Please provide a valid email', 400))
+
+  const user = await User.findOne({ email })
+
+  if (!user) return next(new AppError('This user does not exist', 404))
+
+  const resetToken = user.createPasswordResetToken()
+  await user.save({ validateBeforeSave: false })
+
+  const emailOptions = {
+    to: email,
+    subject: 'Password Reset Request for Bookstore',
+    message: `Hi ${user.name},
+
+    We received a request to reset your password for your Bookstore account. To proceed with resetting your password, please click on the link below:
+    
+    ${req.protocol}://${req.get(
+      'host'
+    )}/api/v1/users/resetPassword/${resetToken}
+    
+    If you did not request a password reset, you can safely ignore this email. Your account security is important to us, and we recommend keeping your password confidential and unique to Bookstore.
+    
+    If you have any questions or need further assistance, please don't hesitate to contact our support team at <olorunnisholaolamilekan@gmail.com>.
+    
+    Best regards,
+    Bookstore Team`,
+  }
+
+  try {
+    await sendEmail(emailOptions)
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Sent password reset email',
+    })
+  } catch (err) {
+    user.passwordResetToken = null
+    user.resetTokenExpiresAt = null
+
+    await user.save({ validateBeforeSave: false })
+
+    return next(
+      new AppError('There was an error sending the email. Try again later!'),
+      500
+    )
+  }
 })
