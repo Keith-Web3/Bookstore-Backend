@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
+const bcrypt = require('bcryptjs')
 
 const userSchema = mongoose.Schema({
   name: {
@@ -32,6 +33,20 @@ const userSchema = mongoose.Schema({
   },
   photo: String,
 })
+
+userSchema.pre('save', function (next) {
+  if (!this.isModified('password')) next()
+
+  const hashedPassword = bcrypt.hash(this.password, 12)
+
+  this.password = hashedPassword
+  this.passwordConfirm = null
+  next()
+})
+
+userSchema.methods.confirmPassword = function (hashedPassword, inputPassword) {
+  return bcrypt.compare(inputPassword, hashedPassword)
+}
 
 const User = mongoose.model('User', userSchema)
 
