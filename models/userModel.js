@@ -41,10 +41,10 @@ const userSchema = new mongoose.Schema({
   resetTokenExpiresAt: Date,
 })
 
-userSchema.pre('save', async function (next) {
+userSchema.pre('save', function (next) {
   if (!this.isModified('password')) next()
 
-  const hashedPassword = await bcrypt.hash(this.password, 12)
+  const hashedPassword = bcrypt.hash(this.password, 12)
 
   this.password = hashedPassword
   this.passwordConfirm = null
