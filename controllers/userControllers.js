@@ -125,6 +125,7 @@ exports.forgotPassword = catchAsync(async function (req, res, next) {
       message: 'Sent password reset email',
     })
   } catch (err) {
+    console.log(err)
     user.passwordResetToken = null
     user.resetTokenExpiresAt = null
 
