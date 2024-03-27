@@ -12,6 +12,15 @@ const signToken = function (userId) {
   })
 }
 
+const sendJwtTokenViaCookies = function (token, res) {
+  const cookieOptions = {
+    expires: Date.now() + process.env.JWT_COOKIES_EXPIRES * 24 * 60 * 60 * 1000,
+    httpOnly: true,
+    secure: true,
+  }
+  res.cookie('jwt', token, cookieOptions)
+}
+
 exports.signup = catchAsync(async function (req, res, next) {
   const { email, password } = req.body
 
@@ -28,6 +37,7 @@ exports.signup = catchAsync(async function (req, res, next) {
   })
 
   const token = signToken(user._id)
+  sendJwtTokenViaCookies(token)
 
   res.status(201).json({
     status: 'success',
@@ -52,6 +62,7 @@ exports.login = catchAsync(async function (req, res, next) {
   }
 
   const token = signToken(user._id)
+  sendJwtTokenViaCookies(token)
 
   res.status(200).json({
     status: 'success',
@@ -154,6 +165,7 @@ exports.resetPassword = catchAsync(async function (req, res, next) {
   await user.save()
 
   const jwtToken = signToken(user._id)
+  sendJwtTokenViaCookies(jwtToken)
 
   res.status(200).json({
     status: 'success',
@@ -174,6 +186,7 @@ exports.updatePassword = catchAsync(async function (req, res, next) {
   await user.save()
 
   const token = signToken(user._id)
+  sendJwtTokenViaCookies(token)
 
   res.status(200).json({
     status: 'success',
