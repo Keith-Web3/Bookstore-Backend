@@ -37,7 +37,7 @@ exports.signup = catchAsync(async function (req, res, next) {
   })
 
   const token = signToken(user._id)
-  sendJwtTokenViaCookies(token)
+  sendJwtTokenViaCookies(token, res)
 
   res.status(201).json({
     status: 'success',
@@ -62,7 +62,7 @@ exports.login = catchAsync(async function (req, res, next) {
   }
 
   const token = signToken(user._id)
-  sendJwtTokenViaCookies(token)
+  sendJwtTokenViaCookies(token, res)
 
   res.status(200).json({
     status: 'success',
@@ -186,7 +186,7 @@ exports.updatePassword = catchAsync(async function (req, res, next) {
   await user.save()
 
   const token = signToken(user._id)
-  sendJwtTokenViaCookies(token)
+  sendJwtTokenViaCookies(token, res)
 
   res.status(200).json({
     status: 'success',
