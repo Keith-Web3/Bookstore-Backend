@@ -7,7 +7,7 @@ const {
   clearDB,
   getStats,
 } = require('../controllers/bookControllers')
-const { protect } = require('../controllers/userControllers')
+const { protect } = require('../controllers/authControllers')
 
 router.route('/').get(protect, getBooks).post(createBook).delete(clearDB)
 router.route('/stats').get(getStats)
