@@ -36,6 +36,8 @@ exports.signup = catchAsync(async function (req, res, next) {
     passwordChangedAt: req.body.passwordChangedAt,
   })
 
+  user.password = null
+
   const token = signToken(user._id)
   sendJwtTokenViaCookies(token, res)
 

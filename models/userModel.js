@@ -36,6 +36,7 @@ const userSchema = new mongoose.Schema({
   passwordChangedAt: {
     type: Date,
     default: new Date(0),
+    select: false,
   },
   passwordResetToken: String,
   resetTokenExpiresAt: Date,
@@ -47,10 +48,10 @@ const userSchema = new mongoose.Schema({
   },
 })
 
-userSchema.pre('save', function (next) {
+userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next()
 
-  const hashedPassword = bcrypt.hash(this.password, 12)
+  const hashedPassword = await bcrypt.hash(this.password, 12)
 
   this.password = hashedPassword
   this.passwordConfirm = null
