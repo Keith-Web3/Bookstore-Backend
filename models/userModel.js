@@ -43,6 +43,7 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
     required: true,
+    select: false,
   },
 })
 
@@ -53,6 +54,12 @@ userSchema.pre('save', function (next) {
 
   this.password = hashedPassword
   this.passwordConfirm = null
+  next()
+})
+
+userSchema.pre(/^find/, function (next) {
+  // this points to the current query
+  this.find({ isActive: { $ne: false } })
   next()
 })
 
