@@ -4,16 +4,11 @@ const router = express.Router()
 const {
   createBook,
   getBooks,
-  clearDB,
   getStats,
 } = require('../controllers/bookControllers')
 const { protect } = require('../controllers/authControllers')
 
-router
-  .route('/')
-  .get(protect, getBooks)
-  .post(protect, createBook)
-  .delete(clearDB)
+router.route('/').get(protect, getBooks).post(protect, createBook)
 router.route('/stats').get(getStats)
 
 module.exports = router
