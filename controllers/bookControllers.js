@@ -19,6 +19,7 @@ exports.createBook = catchAsync(async function (req, res) {
     sales,
     description,
     status,
+    author: req.user._id,
     coverImg: full,
   })
 

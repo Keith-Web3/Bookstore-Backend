@@ -9,7 +9,11 @@ const {
 } = require('../controllers/bookControllers')
 const { protect } = require('../controllers/authControllers')
 
-router.route('/').get(protect, getBooks).post(createBook).delete(clearDB)
+router
+  .route('/')
+  .get(protect, getBooks)
+  .post(protect, createBook)
+  .delete(clearDB)
 router.route('/stats').get(getStats)
 
 module.exports = router

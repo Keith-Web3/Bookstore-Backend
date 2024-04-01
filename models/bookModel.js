@@ -8,6 +8,10 @@ const bookSchema = new mongoose.Schema(
       minLength: 10,
       maxLength: 60,
     },
+    author: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+    },
     price: {
       type: Number,
       required: true,
