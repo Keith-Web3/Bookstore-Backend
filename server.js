@@ -5,6 +5,7 @@ const bookRoute = require('./routers/booksRoute')
 const authRoute = require('./routers/authRoutes')
 const userRoute = require('./routers/userRoutes')
 const AppError = require('./utils/error')
+const { handleError } = require('./controllers/errorControllers')
 
 dotenv.config({ path: './env' })
 
@@ -30,14 +31,7 @@ app.all('*', (req, res, next) => {
   next(error)
 })
 
-app.use((err, req, res, next) => {
-  console.log(err)
-  res.status(err.statusCode || 500).json({
-    status: err.status,
-    message: err.message,
-    stack: err.stack,
-  })
-})
+app.use(handleError)
 app.listen(process.env.PORT, () => {
   console.log(`Listening on port ${process.env.PORT}`)
 })
