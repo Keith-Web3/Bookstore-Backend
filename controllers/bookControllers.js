@@ -9,10 +9,18 @@ exports.createBook = catchAsync(async function (req, res) {
       '%20'
     )}%20cover&orientation=portrait&client_id=${process.env.UNSPLASH_CLIENT_ID}`
   )
+  const { title, price, sales, description, status } = req.body
   const {
     urls: { full },
   } = await coverImgRes.json()
-  const book = await Book.create({ ...req.body, coverImg: full })
+  const book = await Book.create({
+    title,
+    price,
+    sales,
+    description,
+    status,
+    coverImg: full,
+  })
 
   res.status(201).json({
     status: 'success',
