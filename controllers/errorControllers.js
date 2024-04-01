@@ -11,6 +11,10 @@ exports.handleError = function (err, req, res, next) {
   if (err.code === 11000 && err.keyValue?.has('email')) {
     err.message = 'User with this email already exists.'
   }
+  if (!err.isOperational) {
+    err.message = 'Something went wrong!'
+    err.statusCode = 500
+  }
   const errorObj =
     process.env.NODE_ENV === 'development'
       ? {
