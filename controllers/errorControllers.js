@@ -1,5 +1,5 @@
 exports.handleError = function (err, req, res, next) {
-  console.log(err.keyValue)
+  console.log(err)
   const errorName = err.constructor.name
 
   if (errorName === 'TokenExpiredError') {
