@@ -45,7 +45,7 @@ exports.getBooks = catchAsync(async function (req, res) {
 })
 
 exports.getBook = catchAsync(async function (req, res, next) {
-  const book = await Book.findById(req.params.id)
+  const book = await Book.findById(req.params.id).populate('author')
 
   if (!book) {
     return next(new AppError('Could not find book', 404))
