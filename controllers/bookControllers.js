@@ -44,6 +44,21 @@ exports.getBooks = catchAsync(async function (req, res) {
   })
 })
 
+exports.getBook = catchAsync(async function (req, res, next) {
+  const book = await Book.findById(req.params.id)
+
+  if (!book) {
+    return next(new AppError('Could not find book', 404))
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      book,
+    },
+  })
+})
+
 exports.getStats = catchAsync(async function (req, res) {
   const books = await Book.aggregate([
     {
