@@ -27,6 +27,8 @@ const reviewSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
+reviewSchema.index({ author: 1, book: 1 }, { unique: true })
+
 reviewSchema.statics.calcAverageRating = async function (bookId) {
   const stats = await this.aggregate([
     { $match: { book: bookId } },
