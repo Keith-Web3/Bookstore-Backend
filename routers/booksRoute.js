@@ -8,6 +8,9 @@ const {
   getBook,
 } = require('../controllers/bookControllers')
 const { protect } = require('../controllers/authControllers')
+const reviewRouter = require('./reviewRoutes')
+
+router.use('/:bookId/reviews', reviewRouter)
 
 router.route('/').get(getBooks).post(protect, createBook)
 router.route('/:id').get(getBook)
