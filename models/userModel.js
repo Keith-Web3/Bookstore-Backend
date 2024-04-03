@@ -71,8 +71,11 @@ userSchema.pre('save', function (next) {
   next()
 })
 
-userSchema.methods.confirmPassword = function (hashedPassword, inputPassword) {
-  return bcrypt.compare(inputPassword, hashedPassword)
+userSchema.methods.confirmPassword = async function (
+  hashedPassword,
+  inputPassword
+) {
+  return await bcrypt.compare(inputPassword, hashedPassword)
 }
 
 userSchema.methods.hasPasswordChanged = function (iat) {
