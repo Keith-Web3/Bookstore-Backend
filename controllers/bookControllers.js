@@ -4,7 +4,7 @@ const catchAsync = require('../utils/catchAsync')
 
 exports.createBook = catchAsync(async function (req, res) {
   const coverImgRes = await fetch(
-    `https://api.unsplash.com/photos/random?query=${req.body.title}cover&orientation=portrait&client_id=${process.env.UNSPLASH_CLIENT_ID}`
+    `https://api.unsplash.com/photos/random?query=cover%20photo&orientation=portrait&client_id=${process.env.UNSPLASH_CLIENT_ID}`
   )
   const { title, price, sales, description, status } = req.body
   const {
